@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Biblioteca</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #4c51bf;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            background: #f7fafc;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: #edf2f7;
+        }
+
+        .tab.active {
+            background: white;
+            color: #4c51bf;
+            border-bottom: 3px solid #4c51bf;
+        }
+
+        .content {
+            background: white;
+            border-radius: 0 0 10px 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4c51bf;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4c51bf;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #434190;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .item-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .item {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .item-atrasado {
+            background: #fff5f5;
+            border-color: #feb2b2;
+        }
+
+        .item-info h4 {
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .item-info p {
+            color: #718096;
+            font-size: 14px;
+            margin: 3px 0;
+        }
+
+        .item-details {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #a0aec0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-danger {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .badge-warning {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+
+        .status-card {
+            background: #ebf8ff;
+            border: 2px solid #90cdf4;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .status-row span:first-child {
+            color: #4a5568;
+        }
+
+        .status-row span:last-child {
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .alert-danger {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .alert-warning {
+            background: #feebc8;
+            color: #7c2d12;
+            border: 1px solid #f6ad55;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid;
+        }
+
+        .stat-card h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .stat-pending {
+            background: #fffaf0;
+            border-color: #f6ad55;
+            color: #7c2d12;
+        }
+
+        .stat-paid {
+            background: #f0fff4;
+            border-color: #68d391;
+            color: #22543d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .history-header span:first-child {
+            font-weight: 600;
+        }
+
+        .history-date {
+            color: #a0aec0;
+            font-size: 11px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .item-actions {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Sistema de Biblioteca</h1>
+            <p>Controle de acervo, empréstimos e multas</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('acervo')">📖 Acervo</button>
+            <button class="tab" onclick="showTab('emprestimos')">📋 Empréstimos</button>
+            <button class="tab" onclick="showTab('multas')">💰 Multas</button>
+        </div>
+
+        <div class="content">
+            <!-- Tab Acervo -->
+            <div id="acervo" class="tab-content active">
+                <div class="card">
+                    <h3>Cadastrar Item no Acervo</h3>
+                    <form id="formAcervo" onsubmit="cadastrarItem(event)">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="tipoItem" onchange="toggleCampos()">
+                                <option value="livro">Livro</option>
+                                <option value="revista">Revista</option>
+                                <option value="jornal">Jornal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" id="titulo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Autor/Editor</label>
+                            <input type="text" id="autor" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Editora</label>
+                                <input type="text" id="editora">
+                            </div>
+                            <div class="form-group">
+                                <label>Ano</label>
+                                <input type="number" id="ano">
+                            </div>
+                        </div>
+                        <div class="form-group" id="campoIsbn">
+                            <label>ISBN</label>
+                            <input type="text" id="isbn">
+                        </div>
+                        <div class="form-group" id="campoPeriodicidade" style="display: none;">
+                            <label>Periodicidade</label>
+                            <select id="periodicidade">
+                                <option value="">Selecione...</option>
+                                <option value="diario">Diário</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="quinzenal">Quinzenal</option>
+                                <option value="mensal">Mensal</option>
+                                <option value="bimestral">Bimestral</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Adicionar ao Acervo</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Acervo (<span id="totalAcervo">0</span> itens)</h3>
+                    <div id="listaAcervo" class="item-list"></div>
+                </div>
+            </div>
+
+            <!-- Tab Empréstimos -->
+            <div id="emprestimos" class="tab-content">
+                <div class="card">
+                    <h3>Registrar Novo Empréstimo</h3>
+                    <form id="formEmprestimo" onsubmit="registrarEmprestimo(event)">
+                        <div class="form-group">
+                            <label>Usuário</label>
+                            <select id="usuarioEmprestimo" onchange="mostrarStatusUsuario()">
+                                <option value="">Selecione um usuário...</option>
+                            </select>
+                        </div>
+                        <div id="statusUsuario"></div>
+                        <div class="form-group">
+                            <label>Item</label>
+                            <select id="itemEmprestimo" required>
+                                <option value="">Selecione um item...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Prazo (dias)</label>
+                            <input type="number" id="diasEmprestimo" value="7" min="1" max="30" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar Empréstimo</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Empréstimos Ativos</h3>
+                    <div id="listaEmprestimosAtivos" class="item-list"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Histórico de Devoluções</h3>
+                    <div id="historicoEmprestimos" class="history-list"></div>
+                </div>
+            </div>
+
+            <!-- Tab Multas -->
+            <div id="multas" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card stat-pending">
+                        <h4>💳 Multas Pendentes</h4>
+                        <div class="value" id="totalMultasPendentes">R$ 0,00</div>
+                    </div>
+                    <div class="stat-card stat-paid">
+                        <h4>✅ Multas Pagas</h4>
+                        <div class="value" id="totalMultasPagas">R$ 0,00</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Multas Pendentes</h3>
+                    <div id="listaMultasPendentes" class="item-list"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Histórico de Multas Pagas</h3>
+                    <div id="historicoMultas" class="history-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados da aplicação
+        let acervo = [];
+        let emprestimos = [];
+        let multas = [];
+
+        const usuarios = [
+            { id: 1, nome: 'João Silva', email: 'joao@email.com', limiteEmprestimos: 3 },
+            { id: 2, nome: 'Maria Santos', email: 'maria@email.com', limiteEmprestimos: 5 },
+            { id: 3, nome: 'Pedro Oliveira', email: 'pedro@email.com', limiteEmprestimos: 2 },
+            { id: 4, nome: 'Ana Costa', email: 'ana@email.com', limiteEmprestimos: 4 }
+        ];
+
+        // Carregar dados ao iniciar
+        window.onload = async function() {
+            await carregarDados();
+            atualizarInterface();
+            popularSelectUsuarios();
+            calcularMultas();
+            setInterval(calcularMultas, 60000); // Atualizar multas a cada minuto
+        };
+
+        // Funções de Storage
+        async function carregarDados() {
+            try {
+                const acervoData = await window.storage.get('biblioteca-acervo').catch(() => null);
+                const emprestimosData = await window.storage.get('biblioteca-emprestimos').catch(() => null);
+                const multasData = await window.storage.get('biblioteca-multas').catch(() => null);
+
+                if (acervoData) acervo = JSON.parse(acervoData.value);
+                if (emprestimosData) emprestimos = JSON.parse(emprestimosData.value);
+                if (multasData) multas = JSON.parse(multasData.value);
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        async function salvarDados() {
+            try {
+                await window.storage.set('biblioteca-acervo', JSON.stringify(acervo));
+                await window.storage.set('biblioteca-emprestimos', JSON.stringify(emprestimos));
+                await window.storage.set('biblioteca-multas', JSON.stringify(multas));
+            } catch (error) {
+                console.error('Erro ao salvar dados:', error);
+            }
+        }
+
+        // Navegação de tabs
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            atualizarInterface();
+        }
+
+        // Toggle campos do formulário
+        function toggleCampos() {
+            const tipo = document.getElementById('tipoItem').value;
+            const campoIsbn = document.getElementById('campoIsbn');
+            const campoPeriodicidade = document.getElementById('campoPeriodicidade');
+            
+            if (tipo === 'livro') {
+                campoIsbn.style.display = 'block';
+                campoPeriodicidade.style.display = 'none';
+            } else {
+                campoIsbn.style.display = 'none';
+                campoPeriodicidade.style.display = 'block';
+            }
+        }
+
+        // Cadastrar item no acervo
+        async function cadastrarItem(event) {
+            event.preventDefault();
+            
+            const novoItem = {
+                id: Date.now(),
+                tipo: document.getElementById('tipoItem').value,
+                titulo: document.getElementById('titulo').value,
+                autor: document.getElementById('autor').value,
+                editora: document.getElementById('editora').value,
+                ano: document.getElementById('ano').value,
+                isbn: document.getElementById('isbn').value,
+                periodicidade: document.getElementById('periodicidade').value,
+                dataCadastro: new Date().toISOString()
+            };
+            
+            acervo.push(novoItem);
+            await salvarDados();
+            
+            document.getElementById('formAcervo').reset();
+            atualizarInterface();
+        }
+
+        // Remover item do acervo
+        async function removerItem(itemId) {
+            const temEmprestimo = emprestimos.some(e => e.itemId === itemId && !e.dataDevolucao);
+            
+            if (temEmprestimo) {
+                alert('Não é possível remover um item que está emprestado!');
+                return;
+            }
+            
+            if (confirm('Deseja realmente remover este item?')) {
+                acervo = acervo.filter(item => item.id !== itemId);
+                await salvarDados();
+                atualizarInterface();
+            }
+        }
+
+        // Popular select de usuários
+        function popularSelectUsuarios() {
+            const select = document.getElementById('usuarioEmprestimo');
+            select.innerHTML = '<option value="">Selecione um usuário...</option>';
+            
+            usuarios.forEach(user => {
+                const status = podeEmprestar(user.id);
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `${user.nome} ${!status.pode ? '(' + status.motivo + ')' : ''}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Verificar se usuário pode emprestar
+        function podeEmprestar(userId) {
+            const user = usuarios.find(u => u.id === userId);
+            if (!user) return { pode: false, motivo: 'Usuário não encontrado' };
+            
+            const emprestimosAtivos = emprestimos.filter(e => 
+                e.usuarioId === userId && !e.dataDevolucao
+            );
+            
+            const multasPendentes = multas.filter(m => 
+                m.usuarioId === userId && m.status === 'pendente'
+            );
+            
+            const temAtraso = emprestimosAtivos.some(e => 
+                new Date() > new Date(e.dataLimite)
+            );
+            
+            if (emprestimosAtivos.length >= user.limiteEmprestimos) {
+                return { pode: false, motivo: 'Limite de empréstimos atingido' };
+            }
+            
+            if (temAtraso) {
+                return { pode: false, motivo: 'Possui itens em atraso' };
+            }
+            
+            if (multasPendentes.length > 0) {
+                return { pode: false, motivo: 'Possui multas pendentes' };
+            }
+            
+            return { pode: true, motivo: '' };
+        }
+
+        // Mostrar status do usuário
+        function mostrarStatusUsuario() {
+            const userId = parseInt(document.getElementById('usuarioEmprestimo').value);
+            const statusDiv = document.getElementById('statusUsuario');
+            
+            if (!userId) {
+                statusDiv.innerHTML = '';
+                return;
+            }
+            
+            const user = usuarios.find(u => u.id === userId);
+            const emprestimosAtivos = emprestimos.filter(e => 
+                e.usuarioId === userId && !e.dataDevolucao
+            );
+            const multasPendentes = multas.filter(m => 
+                m.usuarioId === userId && m.status === 'pendente'
+            );
+            const temAtraso = emprestimosAtivos.some(e => 
+                new Date() > new Date(e.dataLimite)
+            );
+            
+            statusDiv.innerHTML = `
+                <div class="status-card">
+                    <div class="status-row">
+                        <span>Empréstimos ativos:</span>
+                        <span>${emprestimosAtivos.length}/${user.limiteEmprestimos}</span>
+                    </div>
+                    <div class="status-row">
+                        <span>Multas pendentes:</span>
+                        <span style="color: ${multasPendentes.length > 0 ? '#e53e3e' : 'inherit'}">${multasPendentes.length}</span>
+                    </div>
+                    <div class="status-row">
+                        <span>Itens em atraso:</span>
+                        <span style="color: ${temAtraso ? '#e53e3e' : 'inherit'}">${temAtraso ? 'Sim' : 'Não'}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Registrar empréstimo
+        async function registrarEmprestimo(event) {
+            event.preventDefault();
+            
+            const usuarioId = parseInt(document.getElementById('usuarioEmprestimo').value);
+            const itemId = parseInt(document.getElementById('itemEmprestimo').value);
+            const dias = parseInt(document.getElementById('diasEmprestimo').value);
+            
+            const status = podeEmprestar(usuarioId);
+            if (!status.pode) {
+                alert(`Usuário bloqueado: ${status.motivo}`);
+                return;
+            }
+            
+            const itemEmprestado = emprestimos.some(e => 
+                e.itemId === itemId && !e.dataDevolucao
+            );
+            
+            if (itemEmprestado) {
+                alert('Este item já está emprestado!');
+                return;
+            }
+            
+            const dataEmprestimo = new Date();
+            const dataLimite = new Date();
+            dataLimite.setDate(dataLimite.getDate() + dias);
+            
+            const novoEmprestimo = {
+                id: Date.now(),
+                usuarioId,
+                itemId,
+                dataEmprestimo: dataEmprestimo.toISOString(),
+                dataLimite: dataLimite.toISOString(),
+                dataDevolucao: null
+            };
+            
+            emprestimos.push(novoEmprestimo);
+            await salvarDados();
+            
+            document.getElementById('formEmprestimo').reset();
+            document.getElementById('statusUsuario').innerHTML = '';
+            atualizarInterface();
+        }
+
+        // Registrar devolução
+        async function registrarDevolucao(emprestimoId) {
+            const emprestimo = emprestimos.find(e => e.id === emprestimoId);
+            if (emprestimo) {
+                emprestimo.dataDevolucao = new Date().toISOString();
+                await salvarDados();
+                atualizarInterface();
+            }
+        }
+
+        // Calcular multas
+        async function calcularMultas() {
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            
+            let multasAtualizadas = false;
+            
+            emprestimos.forEach(emp => {
+                if (!emp.dataDevolucao) {
+                    const dataLimite = new Date(emp.dataLimite);
+                    dataLimite.setHours(0, 0, 0, 0);
+                    
+                    if (hoje > dataLimite) {
+                        const diasAtraso = Math.floor((hoje - dataLimite) / (1000 * 60 * 60 * 24));
+                        const valorMulta = diasAtraso * 2.0;
+                        
+                        const multaExistente = multas.find(m => 
+                            m.emprestimoId === emp.id && m.status === 'pendente'
+                        );
+                        
+                        if (!multaExistente) {
+                            multas.push({
+                                id: Date.now() + Math.random(),
+                                emprestimoId: emp.id,
+                                usuarioId: emp.usuarioId,
+                                diasAtraso,
+                                valor: valorMulta,
+                                status: 'pendente',
+                                dataCriacao: hoje.toISOString()
+                            });
+                            multasAtualizadas = true;
+                        } else if (multaExistente.diasAtraso !== diasAtraso) {
+                            multaExistente.diasAtraso = diasAtraso;
+                            multaExistente.valor = valorMulta;
+                            multasAtualizadas = true;
+                        }
+                    }
+                }
+            });
+            
+            if (multasAtualizadas) {
+                await salvarDados();
+                atualizarInterface();
+            }
+        }
+
+        // Pagar multa
+        async function pagarMulta(multaId) {
+            const multa = multas.find(m => m.id === multaId);
+            if (multa) {
+                multa.status = 'paga';
+                multa.dataPagamento = new Date().toISOString();
+                await salvarDados();
+                atualizarInterface();
+            }
+        }
+
+        // Atualizar interface
+        function atualizarInterface() {
+            atualizarListaAcervo();
+            atualizarSelectItens();
+            atualizarEmprestimosAtivos();
+            atualizarHistoricoEmprestimos();
+            atualizarMultas();
+        }
+
+        // Atualizar lista de acervo
+        function atualizarListaAcervo() {
+            const lista = document.getElementById('listaAcervo');
+            document.getElementById('totalAcervo').textContent = acervo.length;
+            
+            if (acervo.length === 0) {
+                lista.innerHTML = '<div class="empty-state">Nenhum item no acervo</div>';
+                return;
+            }
+            
+            lista.innerHTML = acervo.map(item => {
+                const emprestado = emprestimos.some(e => 
+                    e.itemId === item.id && !e.dataDevolucao
+                );
+                
+                const icon = item.tipo === 'livro' ? '📖' : '📰';
+                
+                return `
+                    <div class="item">
+                        <div class="item-info">
+                            <h4>${icon} ${item.titulo}</h4>
+                            <p>${item.autor}</p>
+                            <div class="item-details">
+                                <span style="text-transform: capitalize">${item.tipo}</span>
+                                ${item.editora ? `<span>${item.editora}</span>` : ''}
+                                ${item.ano ? `<span>${item.ano}</span>` : ''}
+                                ${item.isbn ? `<span>ISBN: ${item.isbn}</span>` : ''}
+                                ${item.periodicidade ? `<span style="text-transform: capitalize">${item.periodicidade}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <span class="badge ${emprestado ? 'badge-danger' : 'badge-success'}">
+                                ${emprestado ? 'Emprestado' : 'Disponível'}
+                            </span>
+                            <button class="btn btn-danger" onclick="removerItem(${item.id})">Remover</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Atualizar select de itens
+        function atualizarSelectItens() {
+            const select = document.getElementById('itemEmprestimo');
+            select.innerHTML = '<option value="">Selecione um item...</option>';
+            
+            const itensDisponiveis = acervo.filter(item => 
+                !emprestimos.some(e => e.itemId === item.id && !e.dataDevolucao)
+            );
+            
+            itensDisponiveis.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.titulo} (${item.tipo})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Atualizar empréstimos ativos
+        function atualizarEmprestimosAtivos() {
+            const lista = document.getElementById('listaEmprestimosAtivos');
+            const ativos = emprestimos.filter(e => !e.dataDevolucao);
+            
+            if (ativos.length === 0) {
+                lista.innerHTML = '<div class="empty-state">Nenhum empréstimo ativo</div>';
+                return;
+            }
+            
+            lista.innerHTML = ativos.map(emp => {
+                const usuario = usuarios.find(u => u.id === emp.usuarioId);
+                const item = acervo.find(i => i.id === emp.itemId);
+                const dataLimite = new Date(emp.dataLimite);
+                const dataEmprestimo = new Date(emp.dataEmprestimo);
+                const hoje = new Date();
+                const diasRestantes = Math.ceil((dataLimite - hoje) / (1000 * 60 * 60 * 24));
+                const atrasado = diasRestantes < 0;
+                
+                return `
+                    <div class="item ${atrasado ? 'item-atrasado' : ''}">
+                        <div class="item-info">
+                            <h4>${item ? item.titulo : 'Item não encontrado'}</h4>
+                            <p>${usuario ? usuario.nome : 'Usuário não encontrado'}</p>
+                            <div class="item-details">
+                                <span>⏰ Empréstimo: ${dataEmprestimo.toLocaleDateString('pt-BR')}</span>
+                                <span>📅 Devolução: ${dataLimite.toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            ${atrasado ? `
+                                <div class="alert alert-danger" style="margin-top: 10px;">
+                                    ⚠️ Atrasado ${Math.abs(diasRestantes)} dias
+                                </div>
+                            ` : diasRestantes <= 2 ? `
+                                <div class="alert alert-warning" style="margin-top: 10px;">
+                                    ⏱️ Vence em ${diasRestantes} dias
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="btn btn-success" onclick="registrarDevolucao(${emp.id})">
+                            ✅ Devolver
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Atualizar histórico de empréstimos
+        function atualizarHistoricoEmprestimos() {
+            const lista = document.getElementById('historicoEmprestimos');
+            const devolvidos = emprestimos.filter(e => e.dataDevolucao).reverse();
+            
+            if (devolvidos.length === 0) {
+                lista.innerHTML = '<div class="empty-state">Nenhuma devolução registrada</div>';
+                return;
+            }
+            
+            lista.innerHTML = devolvidos.map(emp => {
+                const usuario = usuarios.find(u => u.id === emp.usuarioId);
+                const item = acervo.find(i => i.id === emp.itemId);
+                const dataLimite = new Date(emp.dataLimite);
+                const dataDevolucao = new Date(emp.dataDevolucao);
+                const foiAtrasado = dataDevolucao > dataLimite;
+                
+                return `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <span>${item ? item.titulo : 'Item removido'}</span>
+                            <span>${usuario ? usuario.nome : 'Usuário não encontrado'}</span>
+                        </div>
+                        <div class="history-date">
+                            Devolvido em: ${dataDevolucao.toLocaleDateString('pt-BR')}
+                            ${foiAtrasado ? '<span style="color: #e53e3e; font-weight: 600; margin-left: 10px;">ATRASADO</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Atualizar multas
+        function atualizarMultas() {
+            // Totais
+            const pendentes = multas.filter(m => m.status === 'pendente');
+            const pagas = multas.filter(m => m.status === 'paga');
+            
+            const totalPendentes = pendentes.reduce((sum, m) => sum + m.valor, 0);
+            const totalPagas = pagas.reduce((sum, m) => sum + m.valor, 0);
+            
+            document.getElementById('totalMultasPendentes').textContent = `R$ ${totalPendentes.toFixed(2)}`;
+            document.getElementById('totalMultasPagas').textContent = `R$ ${totalPagas.toFixed(2)}`;
+            
+            // Lista de pendentes
+            const listaPendentes = document.getElementById('listaMultasPendentes');
+            if (pendentes.length === 0) {
+                listaPendentes.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px;">✅</div>
+                        <div style="font-size: 18px;">Nenhuma multa pendente</div>
+                    </div>
+                `;
+            } else {
+                listaPendentes.innerHTML = pendentes.map(multa => {
+                    const usuario = usuarios.find(u => u.id === multa.usuarioId);
+                    const emprestimo = emprestimos.find(e => e.id === multa.emprestimoId);
+                    const item = acervo.find(i => i.id === (emprestimo ? emprestimo.itemId : null));
+                    
+                    return `
+                        <div class="item item-atrasado">
+                            <div class="item-info">
+                                <h4>${usuario ? usuario.nome : 'Usuário não encontrado'}</h4>
+                                <p>${item ? item.titulo : 'Item não encontrado'}</p>
+                                <div style="margin-top: 10px;">
+                                    <div style="color: #e53e3e; font-weight: 600; margin-bottom: 5px;">
+                                        ⚠️ ${multa.diasAtraso} dias de atraso
+                                    </div>
+                                    <div style="color: #718096; font-size: 14px; margin-bottom: 10px;">
+                                        Taxa: R$ 2,00 por dia
+                                    </div>
+                                    <div style="font-size: 28px; font-weight: 700; color: #c05621;">
+                                        R$ ${multa.valor.toFixed(2)}
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" onclick="pagarMulta(${multa.id})">
+                                💰 Pagar
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Histórico de pagas
+            const historico = document.getElementById('historicoMultas');
+            if (pagas.length === 0) {
+                historico.innerHTML = '<div class="empty-state">Nenhuma multa paga ainda</div>';
+            } else {
+                historico.innerHTML = pagas.slice().reverse().map(multa => {
+                    const usuario = usuarios.find(u => u.id === multa.usuarioId);
+                    const emprestimo = emprestimos.find(e => e.id === multa.emprestimoId);
+                    const item = acervo.find(i => i.id === (emprestimo ? emprestimo.itemId : null));
+                    const dataPagamento = new Date(multa.dataPagamento);
+                    
+                    return `
+                        <div class="history-item">
+                            <div class="history-header">
+                                <span>${usuario ? usuario.nome : 'Usuário não encontrado'}</span>
+                                <span style="color: #48bb78; font-weight: 600;">R$ ${multa.valor.toFixed(2)}</span>
+                            </div>
+                            <div style="color: #a0aec0; font-size: 11px; margin-top: 3px;">
+                                ${item ? item.titulo : 'Item removido'}
+                            </div>
+                            <div class="history-date">
+                                ${multa.diasAtraso} dias de atraso - Pago em: ${dataPagamento.toLocaleDateString('pt-BR')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+    </script>
+</body>
+</html>
